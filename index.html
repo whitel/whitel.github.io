@@ -170,7 +170,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2022-03-15 20:26:32 / Modified: 20:43:37" itemprop="dateCreated datePublished" datetime="2022-03-15T20:26:32+08:00">2022-03-15</time>
+              <time title="Created: 2022-03-15 20:26:32 / Modified: 20:44:12" itemprop="dateCreated datePublished" datetime="2022-03-15T20:26:32+08:00">2022-03-15</time>
             </span>
 
           
@@ -213,7 +213,7 @@
 <li><p>Golang 程序中可以轻松支持<strong>10w 级别</strong>的 Goroutine 运行，而线程数量达到 1k 时，内存占用就已经达到 2G。</p>
 </li>
 </ul>
-<h2 id="3-Goroutine的内部实现"><a href="#3-Goroutine的内部实现" class="headerlink" title="3. Goroutine的内部实现"></a>3. Goroutine的内部实现</h2><h3 id="3-1-土拨鼠解释"><a href="#3-1-土拨鼠解释" class="headerlink" title="3.1 土拨鼠解释"></a>3.1 土拨鼠解释</h3><p><img src="/.io//image-20220315200040810.png" alt="image-20220315200040810"></p>
+<h2 id="3-Goroutine的内部实现"><a href="#3-Goroutine的内部实现" class="headerlink" title="3. Goroutine的内部实现"></a>3. Goroutine的内部实现</h2><h3 id="3-1-土拨鼠解释"><a href="#3-1-土拨鼠解释" class="headerlink" title="3.1 土拨鼠解释"></a>3.1 土拨鼠解释</h3><p><img src="images/image-20220315200040810.png" alt="image-20220315200040810"></p>
 <ul>
 <li><p><strong>土拨鼠(Gopher)的工作任务是：</strong>工地上有若干砖头，地鼠<strong>借助小车</strong>把砖头运送到火种上去烧制。</p>
 </li>
@@ -226,11 +226,11 @@
 <li><p><strong>Machine (M)：</strong>土拨鼠(M)不能通过外部创建出来，只能砖(G)太多了，土拨鼠(M)又太少了，实在忙不过来，<strong>刚好还有空闲的小车(P)没有使用</strong>，那就从别处再借些土拨鼠(M)过来直到把小车(P)用完为止。</p>
 </li>
 </ul>
-<h3 id="3-2-G-P-M模型"><a href="#3-2-G-P-M模型" class="headerlink" title="3.2 G-P-M模型"></a>3.2 G-P-M模型</h3><p><img src="/.io//image-20220315200246005.png" alt="image-20220315200246005"></p>
+<h3 id="3-2-G-P-M模型"><a href="#3-2-G-P-M模型" class="headerlink" title="3.2 G-P-M模型"></a>3.2 G-P-M模型</h3><p><img src="images/image-20220315200246005.png" alt="image-20220315200246005"></p>
 <ul>
 <li>通过土拨鼠解释，我们把其真实情况在真实的计算机中对应起来。从顶部到底部分别是：Go用户使用协程，此时Go runtime创建一个G（协程），并加入到一个P（队列）中，而M（线程）负责处理P中的任务。M负责把任务对应到操作系统内核中真实的线程，而操作系统内核把内核对应到多核心的物理CPU中，从而实现资源的有效利用。</li>
 </ul>
-<p><img src="/.io//image-20220315200428179.png" alt="image-20220315200428179"></p>
+<p><img src="images/image-20220315200428179.png" alt="image-20220315200428179"></p>
 <ul>
 <li>P 代表可以“并行”运行的逻辑处理器，每个 P 都被分配到一个系统线程 M，G 代表 Go 协程。</li>
 <li>Go 调度器中有两个不同的运行队列：<strong>全局运行队列(GRQ)和本地运行队列(LRQ)。</strong></li>
