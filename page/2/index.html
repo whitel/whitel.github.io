@@ -145,6 +145,89 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://whitel.github.io/2021/04/29/git%E5%91%BD%E4%BB%A4%E4%B8%8E%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="whitel">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tech inn">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/04/29/git%E5%91%BD%E4%BB%A4%E4%B8%8E%E5%8E%9F%E7%90%86/" class="post-title-link" itemprop="url">git命令与原理</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-04-29 16:04:42" itemprop="dateCreated datePublished" datetime="2021-04-29T16:04:42+08:00">2021-04-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-03-17 09:50:46" itemprop="dateModified" datetime="2022-03-17T09:50:46+08:00">2022-03-17</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="git-commands"><a href="#git-commands" class="headerlink" title="git commands"></a>git commands</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git log</span><br><span class="line">git branch</span><br><span class="line">git checkout</span><br><span class="line">git reset</span><br><span class="line">git switch</span><br><span class="line">git add</span><br><span class="line">git commit</span><br><span class="line">git status</span><br></pre></td></tr></table></figure>
+
+<h1 id="differences-between-commands"><a href="#differences-between-commands" class="headerlink" title="differences between commands"></a>differences between commands</h1><h2 id="git主要分解为三部分"><a href="#git主要分解为三部分" class="headerlink" title="git主要分解为三部分"></a>git主要分解为三部分</h2><ul>
+<li>working directory，index，repository。</li>
+<li>其中working directory为当前工作目录，通过git add *把文件添加到index进行追踪（但要注意此时并没有把文件修改commit到snapshot）。再通过git commit添加当前index中的内容到当前HEAD所指向的branch的commit当中，并下移一条</li>
+</ul>
+<h2 id="理解三大概念：commit-branch-HEAD"><a href="#理解三大概念：commit-branch-HEAD" class="headerlink" title="理解三大概念：commit, branch, HEAD"></a>理解三大概念：commit, branch, HEAD</h2><ul>
+<li>每一个commit有一个hash的commit ID，可以通过指定branch当作指向某个具体commit ID的指针，而HEAD是有且只有一个的指向当前branch（正常模式）或commit（detach模式）的指针。</li>
+<li>branch is only a pointer to a specific commit</li>
+</ul>
+<h2 id="把commit当作一条指向父节点的链表"><a href="#把commit当作一条指向父节点的链表" class="headerlink" title="把commit当作一条指向父节点的链表"></a>把commit当作一条指向父节点的链表</h2><p>这解释了为什么git checkout到某个指定的commit时只能看到更早时的commit，而不能看到不在此链上的commit。</p>
+<h2 id="branch与tag的区别"><a href="#branch与tag的区别" class="headerlink" title="branch与tag的区别"></a>branch与tag的区别</h2><p>branch会随着HEAD指向的commit而移动，而tag只会跟随某个指定commit不再移动</p>
+<h2 id="reset与checkout的区别"><a href="#reset与checkout的区别" class="headerlink" title="reset与checkout的区别"></a>reset与checkout的区别</h2><p>checkout移动HEAD到指定commit但保持branch不变，而reset直接把当前HEAD指向的branch也移动到对应commit</p>
+<h2 id="branch-internals"><a href="#branch-internals" class="headerlink" title="branch internals"></a>branch internals</h2><ul>
+<li>The concept behind branching is that each snapshot can have more than one child. Applying a second change set to the same snapshot creates a new, separate stream of development. And if it is named, it is called a branch.<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 创建新branch并移动</span><br><span class="line">git checkout -b &lt;branch_name&gt;</span><br><span class="line">// 只创建不移动</span><br><span class="line">git branch &lt;branch_name&gt; &lt;commit_id&gt;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="技巧"><a href="#技巧" class="headerlink" title="技巧"></a>技巧</h1><h2 id="还未git-add之前恢复到原本的样子"><a href="#还未git-add之前恢复到原本的样子" class="headerlink" title="还未git add之前恢复到原本的样子"></a>还未git add之前恢复到原本的样子</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 恢复修改的文件</span><br><span class="line">git checkout .</span><br><span class="line">// 删除新添加的文件</span><br><span class="line">git clean -df</span><br></pre></td></tr></table></figure>
+
+<h2 id="把https上传改成git协议（ssh密钥）上传"><a href="#把https上传改成git协议（ssh密钥）上传" class="headerlink" title="把https上传改成git协议（ssh密钥）上传"></a>把https上传改成git协议（ssh密钥）上传</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote -v</span><br><span class="line">git remote set-url origin git@github.com:someaccount/someproject.git</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://whitel.github.io/2021/04/23/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AE%A1%E7%90%86-%E7%AB%AF%E5%8F%A3%E9%99%90%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -375,7 +458,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-count">13</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
