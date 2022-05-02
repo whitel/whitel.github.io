@@ -145,6 +145,146 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://whitel.github.io/2022/05/02/kubernetes%E5%88%9D%E6%8E%A2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="whitel">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tech inn">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/05/02/kubernetes%E5%88%9D%E6%8E%A2/" class="post-title-link" itemprop="url">kubernetes初探</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-05-02 16:17:44 / Modified: 16:17:57" itemprop="dateCreated datePublished" datetime="2022-05-02T16:17:44+08:00">2022-05-02</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="kubernetes测试记录"><a href="#kubernetes测试记录" class="headerlink" title="kubernetes测试记录"></a>kubernetes测试记录</h1><ul>
+<li>参考《kubernetes权威指南》，进行对kubernetes的初探</li>
+<li>书中源代码：<a target="_blank" rel="noopener" href="https://github.com/custa/k8s-guide-code">https://github.com/custa/k8s-guide-code</a></li>
+</ul>
+<h2 id="安装minikube"><a href="#安装minikube" class="headerlink" title="安装minikube"></a>安装minikube</h2><ul>
+<li>官方地址：<a target="_blank" rel="noopener" href="https://minikube.sigs.k8s.io/docs/start/">https://minikube.sigs.k8s.io/docs/start/</a></li>
+<li>下载并安装</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget &quot;https://storage.googleapis.com/minikube/releases/latest/minikube_latest_amd64.deb&quot;</span><br><span class="line">sudo dpkg -i minikube_latest_amd64.deb</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动minikube</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minikube start</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>make life easier</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">alias kubectl=&quot;minikube kubectl --&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试一下是否安装成功</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pods</span><br></pre></td></tr></table></figure>
+
+<h2 id="部署tomcat-mysql"><a href="#部署tomcat-mysql" class="headerlink" title="部署tomcat-mysql"></a>部署tomcat-mysql</h2><h3 id="启动mysql服务"><a href="#启动mysql服务" class="headerlink" title="启动mysql服务"></a>启动mysql服务</h3><ul>
+<li>启动mysql的Replication Controller，使用rc来启动pod</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f mysql-rc.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看启动的rc与pod</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get rc</span><br><span class="line">kubectl get pods</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动mysql的service，对外提供微服务</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f mysql-svc.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看启动的service</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get services</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动tomcat应用"><a href="#启动tomcat应用" class="headerlink" title="启动tomcat应用"></a>启动tomcat应用</h3><ul>
+<li>启动tomat的Replication Controller，使用rc来启动pod</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f myweb-rc.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看启动的rc与pod</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl get rc</span><br><span class="line">kubectl get pods</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动mysql的service，对外提供微服务</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f myweb-svc.yaml</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看启动的service</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get services</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><ul>
+<li>可以使用dashboard查看kubernetes使用情况</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">minikube dashboard</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>访问虚拟机IP:30001，查看功能是否正常</li>
+</ul>
+<h2 id="部署phpfront-redis"><a href="#部署phpfront-redis" class="headerlink" title="部署phpfront-redis"></a>部署phpfront-redis</h2><h3 id="启动redis-master"><a href="#启动redis-master" class="headerlink" title="启动redis-master"></a>启动redis-master</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f redis-master-rc.yaml</span><br><span class="line">kubectl create -f redis-master-svc.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动redis-slave"><a href="#启动redis-slave" class="headerlink" title="启动redis-slave"></a>启动redis-slave</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f redis-slave-rc.yaml</span><br><span class="line">kubectl create -f redis-slave-svc.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动phpfront"><a href="#启动phpfront" class="headerlink" title="启动phpfront"></a>启动phpfront</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f frontend-rc.yaml</span><br><span class="line">kubectl create -f frontend-svc.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="测试结果-1"><a href="#测试结果-1" class="headerlink" title="测试结果"></a>测试结果</h3><ul>
+<li>访问虚拟机IP:30002，查看功能是否正常</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://whitel.github.io/2022/05/02/Linux%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1325,80 +1465,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://whitel.github.io/2021/04/23/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AE%A1%E7%90%86-%E7%AB%AF%E5%8F%A3%E9%99%90%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="whitel">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Tech inn">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/04/23/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AE%A1%E7%90%86-%E7%AB%AF%E5%8F%A3%E9%99%90%E5%88%B6/" class="post-title-link" itemprop="url">服务器管理-端口限制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2021-04-23 11:00:43" itemprop="dateCreated datePublished" datetime="2021-04-23T11:00:43+08:00">2021-04-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-03-05 11:02:59" itemprop="dateModified" datetime="2022-03-05T11:02:59+08:00">2022-03-05</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="docker-管理操作"><a href="#docker-管理操作" class="headerlink" title="docker 管理操作"></a>docker 管理操作</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br><span class="line">docker image list</span><br></pre></td></tr></table></figure>
-
-<h1 id="nginx反向代理"><a href="#nginx反向代理" class="headerlink" title="nginx反向代理"></a>nginx反向代理</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// 修改配置文件，同一端口转发到不同docker服务</span><br><span class="line">/etc/nginx/conf.d/default.conf</span><br><span class="line">server &#123;</span><br><span class="line">    server_name file.laboratory.com;</span><br><span class="line">    location / &#123;</span><br><span class="line">            proxy_pass http://127.0.0.1:2080;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    listen 8080; # managed by Certbot</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    server_name git.laboratory.com;</span><br><span class="line">    location / &#123;</span><br><span class="line">            proxy_pass http://127.0.0.1:8929;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    listen 8080; # managed by Certbot</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h1 id="tcpdump-抓包"><a href="#tcpdump-抓包" class="headerlink" title="tcpdump 抓包"></a>tcpdump 抓包</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 监听并写入到pcap文件当中</span><br><span class="line">tcpdump -i ens5f1 &quot;tcp port 80 or tcp port 8080&quot; -w hello.pcap</span><br></pre></td></tr></table></figure>
-
-
-<h1 id="centos-7-firewalld防火墙操作"><a href="#centos-7-firewalld防火墙操作" class="headerlink" title="centos 7 firewalld防火墙操作"></a>centos 7 firewalld防火墙操作</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 查看firewalld状态</span><br><span class="line">systemctl status firewalld</span><br><span class="line">// 开启8080端口</span><br><span class="line">firewall-cmd --zone=public --add-port=8080/tcp --permanent</span><br><span class="line">firewall-cmd --reload</span><br><span class="line">// 列出目前防火墙状态</span><br><span class="line">firewall-cmd --list-all</span><br><span class="line">firewall-cmd --list-port</span><br></pre></td></tr></table></figure>
-
-<h1 id="node9-结构"><a href="#node9-结构" class="headerlink" title="node9 结构"></a>node9 结构</h1><p><img src="/.io//structure_of_node9.jpg" alt="avatar"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1468,7 +1534,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">12</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
