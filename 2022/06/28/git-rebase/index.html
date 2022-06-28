@@ -20,15 +20,19 @@
     var CONFIG = {"hostname":"whitel.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Tech inn">
-<meta property="og:url" content="https://whitel.github.io/archives/index.html">
+  <meta name="description" content="git rebase 问题的引入：如果当前分支正在开发的过程中，所基于的分支发生了更新怎么办？ 假设现在分支情况是这样的，HEAD在topic上开发：  123      A---B---C topic     &#x2F;D---E---F---G master   如果直接执行git merge master，则会造成不必要的汇聚点：  123      A---B---C      &#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git rebase">
+<meta property="og:url" content="https://whitel.github.io/2022/06/28/git-rebase/index.html">
 <meta property="og:site_name" content="Tech inn">
+<meta property="og:description" content="git rebase 问题的引入：如果当前分支正在开发的过程中，所基于的分支发生了更新怎么办？ 假设现在分支情况是这样的，HEAD在topic上开发：  123      A---B---C topic     &#x2F;D---E---F---G master   如果直接执行git merge master，则会造成不必要的汇聚点：  123      A---B---C      &#x2F;">
 <meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-06-28T13:47:30.000Z">
+<meta property="article:modified_time" content="2022-06-28T13:47:48.207Z">
 <meta property="article:author" content="whitel">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://whitel.github.io/archives/">
+<link rel="canonical" href="https://whitel.github.io/2022/06/28/git-rebase/">
 
 
 <script id="page-configurations">
@@ -36,12 +40,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>Archive | Tech inn</title>
+  <title>git rebase | Tech inn</title>
   
 
 
@@ -139,237 +143,102 @@
         <div class="content-wrap">
           
 
-          <div class="content archive">
+          <div class="content post posts-expand">
             
 
+    
   
   
-  
-  <div class="post-block">
-    <div class="posts-collapse">
-      <div class="collection-title">
-        <span class="collection-header">Um..! 15 posts in total. Keep on posting.</span>
-      </div>
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://whitel.github.io/2022/06/28/git-rebase/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="whitel">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Tech inn">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          git rebase
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2022-06-28 21:47:30 / Modified: 21:47:48" itemprop="dateCreated datePublished" datetime="2022-06-28T21:47:30+08:00">2022-06-28</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    <div class="collection-year">
-      <span class="collection-header">2022</span>
-    </div>
+        <h2 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a>git rebase</h2><ul>
+<li>问题的引入：如果当前分支正在开发的过程中，所基于的分支发生了更新怎么办？</li>
+<li>假设现在分支情况是这样的，HEAD在topic上开发：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">      A---B---C topic</span><br><span class="line">     /</span><br><span class="line">D---E---F---G master</span><br></pre></td></tr></table></figure>
 
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+<ul>
+<li>如果直接执行<code>git merge master</code>，则会造成不必要的汇聚点：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">      A---B---C </span><br><span class="line">     /         \</span><br><span class="line">D---E---F---G---H master topic</span><br></pre></td></tr></table></figure>
 
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-06-28T21:47:30+08:00"
-              content="2022-06-28">
-          06-28
-        </time>
-      </div>
+<ul>
+<li>此时可以采用<code>git rebase master</code>的方法，基于master重新提交：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">              A&#x27;---B&#x27;---C&#x27; topic</span><br><span class="line">             /</span><br><span class="line">D---E---F---G master</span><br></pre></td></tr></table></figure>
 
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/06/28/git-rebase/" itemprop="url">
-            <span itemprop="name">git rebase</span>
-          </a>
-      </div>
+<ul>
+<li>然后在topic分支上继续开发即可</li>
+<li>因此，从远程仓库拉去分支并rebase到当前正在开发分支的方法是：</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git fetch origin master				<span class="comment"># 拉取远程提交内容，但先不改动分支</span></span><br><span class="line">git rebase origin/master master		<span class="comment"># 把本地分支rebase到远程分支上</span></span><br><span class="line">git rebase master topic				<span class="comment"># 把当前正在开发的分支rebase过去</span></span><br></pre></td></tr></table></figure>
 
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-05-02T17:23:31+08:00"
-              content="2022-05-02">
-          05-02
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/05/02/%E7%BB%99Linux%E5%86%85%E6%A0%B8%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" itemprop="url">
-            <span itemprop="name">给Linux内核添加一个系统调用</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-05-02T16:17:44+08:00"
-              content="2022-05-02">
-          05-02
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/05/02/kubernetes%E5%88%9D%E6%8E%A2/" itemprop="url">
-            <span itemprop="name">kubernetes初探</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-05-02T15:31:13+08:00"
-              content="2022-05-02">
-          05-02
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/05/02/Linux%E5%86%85%E6%A0%B8%E7%BC%96%E8%AF%91/" itemprop="url">
-            <span itemprop="name">Linux内核编译</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-04-17T21:51:54+08:00"
-              content="2022-04-17">
-          04-17
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/04/17/%E3%80%8A%E8%85%BE%E8%AE%AF%E4%BC%A0%E3%80%8B%E8%AF%BB%E5%90%8E%E6%84%9F/" itemprop="url">
-            <span itemprop="name">《腾讯传》读后感</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2022-03-15T20:26:32+08:00"
-              content="2022-03-15">
-          03-15
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2022/03/15/Go%E8%AF%AD%E8%A8%80%E5%8D%8F%E7%A8%8B%E6%9C%BA%E5%88%B6%E6%8E%A2%E5%AF%BB/" itemprop="url">
-            <span itemprop="name">Go语言协程机制探寻</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-    <div class="collection-year">
-      <span class="collection-header">2021</span>
-    </div>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-12-27T01:34:29+08:00"
-              content="2021-12-27">
-          12-27
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/12/27/Minecraft-%E5%B7%A5%E4%B8%9A%E6%97%B6%E4%BB%A32Mod/" itemprop="url">
-            <span itemprop="name">Minecraft-工业时代2Mod</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-12-13T21:27:06+08:00"
-              content="2021-12-13">
-          12-13
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/12/13/CVE-2021-44228/" itemprop="url">
-            <span itemprop="name">CVE-2021-44228</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-11-26T11:15:00+08:00"
-              content="2021-11-26">
-          11-26
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/11/26/hello-world/" itemprop="url">
-            <span itemprop="name">Hello World</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <div class="post-meta">
-        <time itemprop="dateCreated"
-              datetime="2021-06-08T11:08:47+08:00"
-              content="2021-06-08">
-          06-08
-        </time>
-      </div>
-
-      <div class="post-title">
-          <a class="post-title-link" href="/2021/06/08/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AE%A1%E7%90%86%E8%BF%90%E7%BB%B4%E7%9A%84%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95%E6%B1%87%E6%80%BB/" itemprop="url">
-            <span itemprop="name">服务器管理运维的常见问题与解决方法汇总</span>
-          </a>
-      </div>
-
-    </header>
-  </article>
-
+<ul>
+<li>这样一来，之后push到远程仓库中，其他用户是感受不到我们完成了rebase这一操作，并且作为本地用户自身也能忽略进行过了rebase操作，就好像一直是基于远程分支最新的提交来开发的一样。</li>
+</ul>
 
     </div>
-  </div>
-  
-  
-  
 
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/05/02/%E7%BB%99Linux%E5%86%85%E6%A0%B8%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%AA%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" rel="prev" title="给Linux内核添加一个系统调用">
+      <i class="fa fa-chevron-left"></i> 给Linux内核添加一个系统调用
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
   
-  <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
-  </nav>
+  
+  
 
 
 
@@ -421,6 +290,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#git-rebase"><span class="nav-number">1.</span> <span class="nav-text">git rebase</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
